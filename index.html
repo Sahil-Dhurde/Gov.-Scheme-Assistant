@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multilingual Govt Scheme Chatbot</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass-panel {
+      background: linear-gradient(135deg, rgba(15,23,42,0.80), rgba(8,47,73,0.75));
+      border: 1px solid rgba(148,163,184,0.4);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 0 30px rgba(8,47,73,0.55);
+    }
+    .glass-bubble {
+      background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(22,163,74,0.08));
+      border: 1px solid rgba(148,163,184,0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .glass-bubble-user {
+      background: linear-gradient(135deg, rgba(14,116,144,0.9), rgba(5,150,105,0.9));
+      border: 1px solid rgba(190,242,100,0.7);
+      box-shadow: 0 0 18px rgba(56,189,248,0.65);
+    }
+    .glow-border {
+      box-shadow: 0 0 18px rgba(56,189,248,0.8);
+    }
+    .gov-avatar {
+      background: radial-gradient(circle at 20% 20%, #22c55e, #0ea5e9 40%, #1e293b 80%);
+      box-shadow: 0 0 25px rgba(59,130,246,0.7);
+    }
+    .typing-dot {
+      animation: bounce 1s infinite alternate;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes bounce {
+      from { transform: translateY(0); opacity: 0.6; }
+      to { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .neon-progress {
+      background: linear-gradient(90deg, #22d3ee, #4ade80, #a78bfa);
+      background-size: 300% 100%;
+      animation: progressFlow 1.3s linear infinite;
+    }
+    @keyframes progressFlow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 0%; }
+    }
+
+    .perspective {
+      transform: perspective(1600px) rotateY(-5deg);
+    }
+    .perspective-right {
+      transform: perspective(1600px) rotateY(5deg);
+    }
+
+    .thin-scroll::-webkit-scrollbar { width: 6px; }
+    .thin-scroll::-webkit-scrollbar-thumb {
+      background-color: rgba(148,163,184,0.6);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-100 antialiased">
+  <div class="min-h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-teal-900">
+
+    <!-- NAVBAR -->
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex items-center justify-between py-3">
+          <!-- Brand -->
+          <div class="flex items-center gap-2">
+            <div class="gov-avatar w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-semibold text-slate-50">
+              GOV
+            </div>
+            <div>
+              <div class="text-sm font-semibold tracking-wide text-sky-300">
+                Gov Scheme Assistant
+              </div>
+              <div class="text-[10px] text-slate-400 leading-tight">
+                Cyber-Bureaucracy · Multilingual Chatbot
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop nav -->
+          <nav class="hidden md:flex items-center gap-5 text-xs">
+            <button data-page="home" class="nav-link text-slate-300 hover:text-sky-300">Home</button>
+            <button data-page="about" class="nav-link text-slate-300 hover:text-sky-300">About Us</button>
+            <button data-page="contact" class="nav-link text-slate-300 hover:text-sky-300">Contact</button>
+            <button data-page="signin" class="nav-link text-slate-300 hover:text-sky-300">Sign In</button>
+            <button data-page="login" class="nav-link text-slate-300 hover:text-sky-300">Log In</button>
+            <button data-page="create" class="nav-link px-3 py-1.5 rounded-full bg-sky-500 hover:bg-sky-400 text-slate-900 font-semibold">
+              Create Account
+            </button>
+          </nav>
+
+          <!-- Mobile menu button -->
+          <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-md border border-slate-700/70 text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                    d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile dropdown -->
+        <div id="mobile-menu" class="md:hidden hidden pb-3 border-t border-slate-800/80">
+          <nav class="flex flex-col gap-2 pt-3 text-xs">
+            <button data-page="home" class="nav-link text-left text-slate-300 hover:text-sky-300">Home</button>
+            <button data-page="about" class="nav-link text-left text-slate-300 hover:text-sky-300">About Us</button>
+            <button data-page="contact" class="nav-link text-left text-slate-300 hover:text-sky-300">Contact</button>
+            <button data-page="signin" class="nav-link text-left text-slate-300 hover:text-sky-300">Sign In</button>
+            <button data-page="login" class="nav-link text-left text-slate-300 hover:text-sky-300">Log In</button>
+            <button data-page="create" class="nav-link text-left px-3 py-1.5 rounded-full bg-sky-500 hover:bg-sky-400 text-slate-900 font-semibold w-max">
+              Create Account
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT PAGES -->
+    <main class="flex-1 w-full">
+      <!-- HOME (Admin + Chat) -->
+      <section id="page-home" class="page-section block">
+        <div class="max-w-6xl w-full mx-auto px-4 py-5 md:py-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-7 items-stretch">
+            <!-- ADMIN CONTROL TOWER -->
+            <section class="perspective lg:mr-4 transition-transform duration-500">
+              <div class="glass-panel rounded-2xl p-4 md: p-5 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 class="text-sm md:text-base font-semibold text-sky-300 tracking-wide">
+                      Admin Control Tower
+                    </h2>
+                    <p class="text-[11px] text-slate-400">
+                      Data ingestion · Scheme intelligence · Language config
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/60 shadow-sm">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                      <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                      <span class="text-[11px] font-medium text-emerald-200">
+                        <span id="scheme-count">52</span> Schemes Indexed
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-4 flex flex-wrap items-center gap-3">
+                  <div class="text-xs text-slate-300 tracking-wide uppercase">
+                    Data Language Profile
+                  </div>
+                  <select id="admin-language" class="text-xs bg-slate-900/70 border border-slate-700 rounded-full px-3 py-1.5 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60">
+                    <option value="en">English (Primary)</option>
+                    <option value="hi">Hindi + English</option>
+                    <option value="es">Spanish + English</option>
+                    <option value="multi">Multilingual (EN + HI + ES)</option>
+                  </select>
+                </div>
+
+                <!-- Drag & Drop Upload Zone -->
+                <div id="drop-zone"
+                    class="group relative border-2 border-dashed border-sky-400/70 rounded-2xl py-8 px-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:glow-border hover:border-teal-300 hover:bg-slate-900/40">
+                  <input id="file-input" type="file" class="hidden" multiple />
+                  <div class="mb-3 flex items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-sky-500/20 border border-sky-300/70 flex items-center justify-center glow-border">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sky-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4-4m0 0L8 12m4-4v12" />
+                      </svg>
+                    </div>
+                  </div>
+                  <p class="text-xs md:text-sm text-slate-200">
+                    Drag & drop scheme data (PDF / DOCX / CSV)
+                  </p>
+                  <p class="text-[11px] text-slate-400 mt-1">
+                    Or <span class="text-sky-300 underline">browse</span> from your secure workstation
+                  </p>
+                </div>
+
+                <!-- Upload status -->
+                <div class="mt-4 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 uppercase tracking-wide">
+                      Ingestion status
+                    </span>
+                    <span id="upload-status" class="text-[11px] text-emerald-300">
+                      Idle · No active uploads
+                    </span>
+                  </div>
+                  <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                    <div id="upload-progress" class="neon-progress h-full rounded-full w-0"></div>
+                  </div>
+                  <ul id="upload-list" class="mt-2 space-y-1 text-[11px] text-slate-300 max-h-20 overflow-y-auto thin-scroll"></ul>
+                </div>
+
+                <div class="mt-5 border-t border-slate-800/80 pt-3">
+                  <p class="text-[10px] uppercase tracking-wide text-slate-500 mb-1">
+                    Under the Hood · Planned Stack
+                  </p>
+                  <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300">
+                    <div>
+                      <p><span class="text-sky-300">Frontend:</span> HTML + JS + Tailwind</p>
+                      <p><span class="text-teal-300">Parsing:</span> Python · LangChain</p>
+                    </div>
+                    <div>
+                      <p><span class="text-indigo-300">Brain:</span> Gemini API (LLM)</p>
+                      <p><span class="text-emerald-300">Vector DB:</span> Pinecone / FAISS</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- CITIZEN QUERY PORTAL -->
+            <section class="perspective-right lg:ml-4 transition-transform duration-500">
+              <div class="glass-panel rounded-2xl p-4 md:p-5 relative overflow-hidden">
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <h2 class="text-sm md:text-base font-semibold text-teal-300 tracking-wide">
+                      Citizen Query Portal
+                    </h2>
+                    <p class="text-[11px] text-slate-400">
+                      Ask about eligibility · Learn how to apply
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[11px] text-slate-400 uppercase">Chat Language</span>
+                    <select id="chat-language"
+                            class="text-xs bg-slate-950/80 border border-slate-700 rounded-full px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-sky-400">
+                      <option value="en">English</option>
+                      <option value="hi">हिंदी</option>
+                      <option value="es">Español</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="relative">
+                      <div class="gov-avatar w-10 h-10 rounded-full flex items-center justify-center text-[10px] font-semibold text-slate-50">
+                        BOT
+                      </div>
+                      <div class="absolute -right-0.5 -bottom-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-950 animate-pulse"></div>
+                    </div>
+                    <div class="text-[11px] text-slate-300">
+                      <div id="bot-greeting">How can I help you?</div>
+                      <div class="text-[10px] text-slate-500">
+                        Gov‑Buddy · Multilingual Eligibility Assistant
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-3">
+                  <button class="px-3 py-1.5 rounded-full text-[11px] bg-slate-950/70 border border-sky-500/60 text-sky-200 hover:bg-slate-900/80 quick-chip">
+                    Check Pension Eligibility
+                  </button>
+                  <button class="px-3 py-1.5 rounded-full text-[11px] bg-slate-950/70 border border-teal-500/60 text-teal-200 hover:bg-slate-900/80 quick-chip">
+                    Small Business Grants
+                  </button>
+                  <button class="px-3 py-1.5 rounded-full text-[11px] bg-slate-950/70 border border-violet-500/60 text-violet-200 hover:bg-slate-900/80 quick-chip">
+                    Student Scholarship
+                  </button>
+                  <button class="px-3 py-1.5 rounded-full text-[11px] bg-slate-950/70 border border-emerald-500/60 text-emerald-200 hover:bg-slate-900/80 quick-chip">
+                    Rural Housing Schemes
+                  </button>
+                </div>
+
+                <div class="grid grid-rows-[1fr_auto] h-[340px] md:h-[380px] gap-2">
+                  <div id="chat-log"
+                      class="glass-bubble rounded-xl p-3 md:p-4 overflow-y-auto thin-scroll space-y-2 text-xs md:text-[13px]">
+                  </div>
+
+                  <div class="flex flex-col gap-1">
+                    <div id="typing-indicator" class="hidden flex items-center gap-1 text-[11px] text-slate-400">
+                      <span class="w-1.5 h-1.5 rounded-full bg-sky-300 typing-dot"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-sky-300 typing-dot"></span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-sky-300 typing-dot"></span>
+                      <span class="ml-1">Gov‑Buddy is typing…</span>
+                    </div>
+                    <form id="chat-form" class="flex items-center gap-2">
+                      <input id="chat-input"
+                            class="flex-1 rounded-full px-3 py-2 text-xs md:text-sm bg-slate-950/70 border border-slate-700 text-slate-50 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-400"
+                            placeholder="How can I help you?" />
+                      <button type="submit"
+                              class="px-3 py-2 rounded-full text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-slate-900 shadow-md shadow-sky-500/40">
+                        Send
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT PAGE -->
+      <section id="page-about" class="page-section hidden">
+        <div class="max-w-3xl mx-auto px-4 py-8">
+          <div class="glass-panel rounded-2xl p-6 space-y-3">
+            <h2 class="text-lg font-semibold text-sky-300">About Us</h2>
+            <p class="text-sm text-slate-200">
+              This portal is a prototype of a Large Language Model powered assistant that helps citizens explore eligibility for government schemes in multiple languages.
+            </p>
+            <p class="text-sm text-slate-300">
+              The frontend uses an accessible glassmorphism UI built with Tailwind CSS, while the backend (to be integrated) will use Python, LangChain, Gemini API, and a vector database to match user profiles with schemes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT PAGE -->
+      <section id="page-contact" class="page-section hidden">
+        <div class="max-w-3xl mx-auto px-4 py-8">
+          <div class="glass-panel rounded-2xl p-6 space-y-4">
+            <h2 class="text-lg font-semibold text-teal-300">Contact</h2>
+            <p class="text-sm text-slate-300">
+              For feedback or integration with real government systems, please reach out via this mock contact form.
+            </p>
+            <form class="space-y-3">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Name</label>
+                <input class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Email</label>
+                <input type="email" class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Message</label>
+                <textarea rows="4" class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm"></textarea>
+              </div>
+              <button type="button" class="px-4 py-2 rounded-full bg-sky-500 hover:bg-sky-400 text-slate-900 text-sm font-semibold">
+                Send Message (Demo)
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- SIGN IN PAGE -->
+      <section id="page-signin" class="page-section hidden">
+        <div class="max-w-md mx-auto px-4 py-8">
+          <div class="glass-panel rounded-2xl p-6 space-y-4">
+            <h2 class="text-lg font-semibold text-sky-300">Sign In (Admin)</h2>
+            <p class="text-xs text-slate-400">
+              Restricted console for authorized government administrators.
+            </p>
+            <form class="space-y-3">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Official Email</label>
+                <input type="email" class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Password</label>
+                <input type="password" class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <button type="button" class="w-full px-4 py-2 rounded-full bg-sky-500 hover:bg-sky-400 text-slate-900 text-sm font-semibold">
+                Sign In (Demo)
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOG IN PAGE (Citizen) -->
+      <section id="page-login" class="page-section hidden">
+        <div class="max-w-md mx-auto px-4 py-8">
+          <div class="glass-panel rounded-2xl p-6 space-y-4">
+            <h2 class="text-lg font-semibold text-teal-300">Log In (Citizen)</h2>
+            <p class="text-xs text-slate-400">
+              Citizens can log in to save profiles and track scheme applications (placeholder).
+            </p>
+            <form class="space-y-3">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Mobile / Email</label>
+                <input class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Password / OTP</label>
+                <input type="password" class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <button type="button" class="w-full px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 text-sm font-semibold">
+                Log In (Demo)
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREATE ACCOUNT PAGE -->
+      <section id="page-create" class="page-section hidden">
+        <div class="max-w-md mx-auto px-4 py-8">
+          <div class="glass-panel rounded-2xl p-6 space-y-4">
+            <h2 class="text-lg font-semibold text-indigo-300">Create Account</h2>
+            <p class="text-xs text-slate-400">
+              Create a citizen profile to quickly check scheme eligibility and save your details (placeholder).
+            </p>
+            <form class="space-y-3">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Full Name</label>
+                <input class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Mobile Number</label>
+                <input class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Preferred Language</label>
+                <select class="w-full rounded-lg bg-slate-950/70 border border-slate-700 px-3 py-2 text-sm">
+                  <option>English</option>
+                  <option>हिंदी</option>
+                  <option>Español</option>
+                </select>
+              </div>
+              <button type="button" class="w-full px-4 py-2 rounded-full bg-sky-500 hover:bg-sky-400 text-slate-900 text-sm font-semibold">
+                Create Account (Demo)
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+        <div>
+          © 2025 Multilingual Gov Scheme Assistant. Prototype UI only.
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="#" class="hover:text-sky-300">Privacy</a>
+          <a href="#" class="hover:text-sky-300">Terms</a>
+          <a href="#" class="hover:text-sky-300">Accessibility</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ---------------- NAVIGATION (MULTI-PAGE) ----------------
+    const sections = document.querySelectorAll(".page-section");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const mobileToggle = document.getElementById("mobile-menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    function showPage(pageId) {
+      sections.forEach(sec => {
+        sec.style.display = (sec.id === "page-" + pageId) ? "block" : "none";
+      });
+      // close mobile menu on navigation
+      mobileMenu.classList.add("hidden");
+    }
+
+    navLinks.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const page = btn.getAttribute("data-page");
+        showPage(page);
+      });
+    });
+
+    mobileToggle.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+
+    // ---------------- CHAT + LANG + UPLOAD LOGIC (same as before) ----------------
+    const chatLog = document.getElementById("chat-log");
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+    const typingIndicator = document.getElementById("typing-indicator");
+    const chatLanguageSelect = document.getElementById("chat-language");
+    const botGreeting = document.getElementById("bot-greeting");
+
+    const dropZone = document.getElementById("drop-zone");
+    const fileInput = document.getElementById("file-input");
+    const uploadStatus = document.getElementById("upload-status");
+    const uploadProgress = document.getElementById("upload-progress");
+    const uploadList = document.getElementById("upload-list");
+    const schemeCount = document.getElementById("scheme-count");
+    const adminLanguageSelect = document.getElementById("admin-language");
+
+    let messages = [];
+    let currentChatLang = "en";
+    let schemesIndexed = 52;
+
+    const uiText = {
+      en: {
+        placeholder: "How can I help you?",
+        greeting: "How can I help you?",
+        typing: "Gov‑Buddy is typing…",
+        chips: {
+          pension: "Check Pension Eligibility",
+          grants: "Small Business Grants",
+          student: "Student Scholarship",
+          housing: "Rural Housing Schemes"
+        }
+      },
+      hi: {
+        placeholder: "मैं आपकी कैसे मदद कर सकता हूँ?",
+        greeting: "मैं आपकी कैसे मदद कर सकता हूँ?",
+        typing: "Gov‑Buddy टाइप कर रहा है…",
+        chips: {
+          pension: "पेंशन पात्रता जाँचें",
+          grants: "लघु व्यवसाय अनुदान",
+          student: "छात्रवृत्ति जानकारी",
+          housing: "ग्रामीण आवास योजना"
+        }
+      },
+      es: {
+        placeholder: "¿Cómo puedo ayudarte?",
+        greeting: "¿Cómo puedo ayudarte?",
+        typing: "Gov‑Buddy está escribiendo…",
+        chips: {
+          pension: "Revisar elegibilidad de pensión",
+          grants: "Subvenciones para pequeños negocios",
+          student: "Becas para estudiantes",
+          housing: "Programas de vivienda rural"
+        }
+      }
+    };
+
+    function addMessage(role, text) {
+      messages.push({ role, text });
+      renderChat();
+    }
+
+    function renderChat() {
+      chatLog.innerHTML = "";
+      messages.forEach(msg => {
+        const wrapper = document.createElement("div");
+        wrapper.className = `flex ${msg.role === "user" ? "justify-end" : "justify-start"}`;
+        const bubble = document.createElement("div");
+        bubble.className = `max-w-[80%] rounded-2xl px-3 py-2 mb-1 text-[12px] md:text-[13px] ${
+          msg.role === "user"
+            ? "glass-bubble-user text-slate-900"
+            : "glass-bubble text-slate-100"
+        }`;
+        bubble.textContent = msg.text;
+        wrapper.appendChild(bubble);
+        chatLog.appendChild(wrapper);
+      });
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function initChat() {
+      messages = [];
+      addMessage("assistant", uiText[currentChatLang].greeting);
+    }
+
+    function updateLanguageUi(lang) {
+      currentChatLang = lang;
+      chatInput.placeholder = uiText[lang].placeholder;
+      botGreeting.textContent = uiText[lang].greeting;
+      typingIndicator.querySelector("span:nth-child(4)").textContent = uiText[lang].typing;
+
+      const chips = document.querySelectorAll(".quick-chip");
+      const labels = uiText[lang].chips;
+      const keys = Object.keys(labels);
+      chips.forEach((chip, index) => {
+        chip.textContent = labels[keys[index]] || chip.textContent;
+      });
+
+      initChat();
+    }
+
+    chatLanguageSelect.addEventListener("change", (e) => {
+      updateLanguageUi(e.target.value);
+    });
+
+    chatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+      chatInput.value = "";
+      addMessage("user", text);
+      typingIndicator.classList.remove("hidden");
+
+      setTimeout(() => {
+        typingIndicator.classList.add("hidden");
+        const reply = mockLLMResponse(text, currentChatLang);
+        addMessage("assistant", reply);
+      }, 900 + Math.random() * 900);
+    });
+
+    function mockLLMResponse(userText, lang) {
+      if (lang === "hi") {
+        return "यह एक डेमो उत्तर है। वास्तविक प्रणाली में, आपका डेटा सरकारी योजना डेटाबेस और एलएलएम से जुड़ा होगा।";
+      }
+      if (lang === "es") {
+        return "Esta es una respuesta de demostración. En el sistema real, tu consulta se conectará al LLM y la base de datos de programas gubernamentales.";
+      }
+      return "This is a demo response. In the real system, your query would be routed through the LLM and the government scheme database.";
+    }
+
+    document.querySelectorAll(".quick-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        const text = chip.textContent.trim();
+        chatInput.value = text;
+        chatForm.dispatchEvent(new Event("submit"));
+      });
+    });
+
+    ["dragenter","dragover","dragleave","drop"].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    ["dragenter","dragover"].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => {
+        dropZone.classList.add("glow-border","border-teal-300");
+      });
+    });
+
+    ["dragleave","drop"].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => {
+        dropZone.classList.remove("glow-border","border-teal-300");
+      });
+    });
+
+    dropZone.addEventListener("click", () => fileInput.click());
+    dropZone.addEventListener("drop", (e) => handleFiles(e.dataTransfer.files));
+    fileInput.addEventListener("change", (e) => handleFiles(e.target.files));
+
+    function handleFiles(fileList) {
+      if (!fileList || !fileList.length) return;
+      Array.from(fileList).forEach(file => simulateUpload(file));
+    }
+
+    function simulateUpload(file) {
+      const li = document.createElement("li");
+      li.className = "flex items-center justify-between gap-2";
+      li.innerHTML = `<span>${file.name}</span><span class="text-[10px] text-slate-400">Queued...</span>`;
+      uploadList.appendChild(li);
+
+      uploadStatus.textContent = "Processing uploads…";
+      uploadStatus.classList.remove("text-emerald-300");
+      uploadStatus.classList.add("text-sky-300");
+
+      let progress = 0;
+      uploadProgress.style.width = "0%";
+
+      const interval = setInterval(() => {
+        progress += 8 + Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          li.querySelector("span:nth-child(2)").textContent = "Indexed";
+          li.querySelector("span:nth-child(2)").classList.remove("text-slate-400");
+          li.querySelector("span:nth-child(2)").classList.add("text-emerald-300");
+
+          schemesIndexed += 1;
+          schemeCount.textContent = schemesIndexed.toString();
+          uploadStatus.textContent = "Idle · No active uploads";
+          uploadStatus.classList.remove("text-sky-300");
+          uploadStatus.classList.add("text-emerald-300");
+          setTimeout(() => { uploadProgress.style.width = "0%"; }, 400);
+        } else {
+          uploadProgress.style.width = progress + "%";
+        }
+      }, 200);
+    }
+
+    adminLanguageSelect.addEventListener("change", (e) => {
+      const val = e.target.value;
+      if (val === "multi") {
+        uploadStatus.textContent = "Multilingual index mode enabled (EN + HI + ES)";
+      } else if (val === "hi") {
+        uploadStatus.textContent = "Primary data language set to Hindi + English";
+      } else if (val === "es") {
+        uploadStatus.textContent = "Primary data language set to Spanish + English";
+      } else {
+        uploadStatus.textContent = "Primary data language set to English";
+      }
+      uploadStatus.classList.remove("text-emerald-300");
+      uploadStatus.classList.add("text-sky-300");
+      setTimeout(() => {
+        uploadStatus.classList.remove("text-sky-300");
+        uploadStatus.classList.add("text-emerald-300");
+      }, 2000);
+    });
+
+    // Initial page and chat
+    showPage("home");
+    updateLanguageUi("en");
+  </script>
+</body>
+</html>
